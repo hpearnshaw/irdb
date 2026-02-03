@@ -57,14 +57,14 @@ class TestLoadUserCommands:
 
     def test_user_commands_can_change_modes(self):
         cmd = scopesim.UserCommands(use_instrument="MICADO")
-        cmd.set_modes(["MCAO", "SPEC_3000x50"])
+        cmd.set_modes(["MCAO", "SPEC_3000x48"])
 
         assert "MORFEO" in [yd["name"] for yd in cmd.yaml_dicts]
         assert "MICADO_SPEC" in [yd["name"] for yd in cmd.yaml_dicts]
 
     def test_user_commands_can_change_modes_via_init(self):
         cmd = scopesim.UserCommands(use_instrument="MICADO",
-                                    set_modes=["MCAO", "SPEC_3000x50"])
+                                    set_modes=["MCAO", "SPEC_3000x48"])
 
         assert "MORFEO" in [yd["name"] for yd in cmd.yaml_dicts]
         assert "MICADO_SPEC" in [yd["name"] for yd in cmd.yaml_dicts]
