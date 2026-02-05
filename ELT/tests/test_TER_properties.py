@@ -35,8 +35,6 @@ def test_eso_vs_scopesim_throughput():
         plt.show()
 
 
-## .todo: the values are not correct
-@pytest.mark.xfail(reason="Does fail with ScopeSim 0.7.1. TODO: Remove mark when 0.8.0 is released.")
 def test_eso_vs_scopesim_emission():
     cmds = UserCommands(properties={
         "!ATMO.temperature": 0.,
