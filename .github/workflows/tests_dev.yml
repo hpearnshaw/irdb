@@ -13,7 +13,7 @@ jobs:
     name: Tests
     uses: ./.github/workflows/tests.yml
 
-  tests:
+  internal_tests:
     name: Internal Tests
     uses: ./.github/workflows/internal_tests.yml
 
