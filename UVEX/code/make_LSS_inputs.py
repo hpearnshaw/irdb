@@ -7,7 +7,7 @@ class LSSInputs:
     def __init__(self):
         self.slit_length = 2.*u.deg
         self.slit_width = 2.*u.arcsec
-        self.x_0 = 3.5*u.deg
+        self.x_0 = 0.*u.deg # actually at 3.5*u.deg according to ETC
         self.y_0 = 0.*u.deg
         self.pixel_scale = 0.80*u.arcsec
         self.plate_scale = 80.*u.arcsec/u.mm
@@ -108,8 +108,12 @@ class LSSInputs:
         )
         hdu2.header["EXTNAME"] = "UVIM_LSS_trace"
         hdu2.header["DISPDIR"] = "y"
-        hdu2.header["x_unit"] = "mm"
-        hdu2.header["y_unit"] = "mm"
+        hdu2.header["TUNIT1"] = "um"
+        hdu2.header["TUNIT2"] = "arcsec"
+        hdu2.header["TUNIT3"] = "mm"
+        hdu2.header["TUNIT4"] = "mm"
+        hdu2.header["WAVECOLN"] = "wavelength"
+        hdu2.header["SLITPOSN"] = "s"
         hdul = fits.HDUList([hdu0, hdu1, hdu2])
         hdul.writeto(outfile, overwrite=True)
 
@@ -133,7 +137,7 @@ class LSSInputs:
                     f.write(f"{wl.value}    {trans}\n")
 
 if __name__ == "__main__":
-    # run  python3 make_LSS_inputs.py from command line
+    # run python3 make_LSS_inputs.py from command line
     lss_inputs = LSSInputs()
     lss_inputs.make_spectral_efficiency()
     lss_inputs.make_slit_geometry()

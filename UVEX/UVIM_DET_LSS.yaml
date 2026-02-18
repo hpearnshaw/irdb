@@ -1,11 +1,11 @@
 object: detector
 alias: DET
-name: uvex_detector
+name: uvex_lss_detector
 description: Two adjacent 4096x4096 CMOS detectors for LSS mode
 source:
 
 properties:
-  detector: UVEX_CMOS
+  detector: UVEX_CMOS_LSS
   image_plane_id: 0
   dit: "!OBS.dit"
   ndit: "!OBS.ndit"
@@ -38,6 +38,20 @@ effects:
       angle_unit: deg
       gain_unit: electron/adu
 
+ # - name: uvex_fits_keywords
+#    description: UVEX-specific FITS header keywords
+#    class: ExtraFitsKeywords
+#    include: True
+#    kwargs:
+#      filename: FITS_extra_keywords.yaml
+  
+#  - name: uvex_lss_fits_keywords
+#    description: UVEX LSS-specific FITS header keywords
+#    class: ExtraFitsKeywords
+#    include: True
+#    kwargs:
+#      filename: FITS_LSS_keywords.yaml
+      
 #  - name: qe_curve
 #    description: Quantum efficiency curve
 #    class: QuantumEfficiencyCurve

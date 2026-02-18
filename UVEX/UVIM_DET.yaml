@@ -32,6 +32,13 @@ effects:
       angle_unit: deg
       gain_unit: electron/adu
 
+#  - name: uvex_fits_keywords
+#    description: UVEX-specific FITS header keywords
+#    class: ExtraFitsKeywords
+#    include: True
+#    kwargs:
+#      filename: FITS_extra_keywords.yaml
+      
 #  - name: qe_curve
 #    description: Quantum efficiency curve
 #    class: QuantumEfficiencyCurve
