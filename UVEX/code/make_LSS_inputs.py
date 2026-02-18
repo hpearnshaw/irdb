@@ -11,7 +11,7 @@ class LSSInputs:
         self.y_0 = 0.*u.deg
         self.pixel_scale = 0.80*u.arcsec
         self.plate_scale = 80.*u.arcsec/u.mm
-        self.gap_size = 100 # in pixels
+        self.gap_size = 100 # in pixels, haven't done anything with this yet
         self.num_pixels = 4096 # in spatial direction
     
     @staticmethod
@@ -29,14 +29,14 @@ class LSSInputs:
         hdu0.header["EDATA"] = 2
         hdu0.header["DATE"] = np.datetime64('today', 'D').astype(str)
         hdu1 = fits.BinTableHDU.from_columns(
-            [fits.Column(name="description", format="20A", array=["UVIM_LSS_spectral_efficiency"]),
+            [fits.Column(name="description", format="20A", array=["UVIM_LSS_trace"]),
             fits.Column(name="extension_id", format="I", array=[2])]
         )
         hdu2 = fits.BinTableHDU.from_columns(
             [fits.Column(name="wavelength", format="E", array=spec_eff_dict["wavelength"]),
             fits.Column(name="efficiency", format="E", array=spec_eff_dict["efficiency"])]
         )
-        hdu2.header["EXTNAME"] = "UVIM_LSS_spectral_efficiency"
+        hdu2.header["EXTNAME"] = "UVIM_LSS_trace"
         hdul = fits.HDUList([hdu0, hdu1, hdu2])
         hdul.writeto(outfile, overwrite=True)
 
@@ -61,36 +61,39 @@ class LSSInputs:
 
     def make_spectral_trace(self, slit_geometry="UVIM_LSS_slit_geometry.dat", 
                             infile="inputs/UVEXS_Spectral_Resolution_R2000.txt", 
-                            outfile="UVIM_LSS_spectral_trace.fits"):
-        # 2 4k by 4k detectors with long side along the spectral direction, so 4096 pixels in spatial direction 
-        # and 8192 pixels in spectral direction
-        # spectral file contains wavelength to position mapping
-        # set y as dispersion direction
-        # eventually should check that the set_dispersion function in the SpectralTraceList is consistent with the true dispersion values 
+                            outfile="UVIM_LSS_spectral_trace.fits",
+                            n_slit_positions=40):
+        
         data = np.loadtxt(infile, skiprows=2, unpack=True)
         wavelength = data[0] * u.nm
-        y_pos = data[1] * u.mm
+        y_pos = (data[1] * u.mm).value
         dispersion = data[2] * u.nm # per pixel
-        wavelength = wavelength.to(u.um) # convert to microns
+        wavelength = wavelength.to(u.um).value # convert to microns
 
         # get slit geometry in spatial direction for centering the trace
         slit_coords = np.loadtxt(slit_geometry, skiprows=1)
         slit_s_min = np.min(slit_coords[:,1]) # in arcsec
         slit_s_max = np.max(slit_coords[:,1]) # in arcsec
         slit_s_center = (slit_s_min + slit_s_max) / 2 
+
         # assume the slit is centered on detector, so 2048 pixels in each direction
         s_min = -self.num_pixels/2 * self.pixel_scale + slit_s_center # in arcsec
         s_max = self.num_pixels/2 * self.pixel_scale + slit_s_center # in arcsec
         x_det_min = s_min / self.plate_scale # in mm
         x_det_max = s_max / self.plate_scale # in mm
-        print(wavelength)
-        print(y_pos)
-        # assume linear mapping between s and x
-        s_grid = np.linspace(s_min, s_max, len(wavelength)) # in arcsec
-        x_grid = np.linspace(x_det_min, x_det_max, len(wavelength)) # in mm
-        print(s_grid)
-        print(x_grid)
-        # write to fits file
+
+        # for a long-slit spectrograph, each position in the slit creates a vertical trace
+        # this means we effectively have a grid of traces
+        s_positions = np.linspace(s_min.value, s_max.value, n_slit_positions) # in arcsec
+        x_positions = np.linspace(x_det_min.value, x_det_max.value, n_slit_positions) # in mm
+        
+        # grid w/ N_slit_positions * N_wavelengths rows
+        # y varies with wavelength, but s and x do not
+        wavelength_grid = np.tile(wavelength, n_slit_positions)
+        y_grid = np.tile(y_pos, n_slit_positions)
+        s_grid = np.repeat(s_positions, len(wavelength)) # in arcsec
+        x_grid = np.repeat(x_positions, len(wavelength)) # in mm
+        # write to fits file in the format SpectralTraceList expects
         hdu0 = fits.PrimaryHDU()
         hdu0.header["ECAT"] = 1
         hdu0.header["EDATA"] = 2
@@ -101,10 +104,10 @@ class LSSInputs:
             fits.Column(name="image_plane_id", format="I", array=[0])]
         )
         hdu2 = fits.BinTableHDU.from_columns(
-            [fits.Column(name="wavelength", format="E", array=wavelength.value),
-            fits.Column(name="s", format="E", array=s_grid.value),
-            fits.Column(name="x", format="E", array=x_grid.value),
-            fits.Column(name="y", format="E", array=y_pos.value)]
+            [fits.Column(name="wavelength", format="E", array=wavelength_grid),
+            fits.Column(name="s", format="E", array=s_grid),
+            fits.Column(name="x", format="E", array=x_grid),
+            fits.Column(name="y", format="E", array=y_grid)]
         )
         hdu2.header["EXTNAME"] = "UVIM_LSS_trace"
         hdu2.header["DISPDIR"] = "y"

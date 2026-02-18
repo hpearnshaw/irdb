@@ -1,3 +1,5 @@
+# wavelength_unit: nm
+# action: transmission
 wavelength    transmission
 115.0    0.300146
 120.0    0.359919

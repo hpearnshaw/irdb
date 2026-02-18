@@ -2,7 +2,6 @@ object: detector
 alias: DET
 name: uvex_lss_detector
 description: Two adjacent 4096x4096 CMOS detectors for LSS mode
-source:
 
 properties:
   detector: UVEX_CMOS_LSS
@@ -23,13 +22,13 @@ effects:
     kwargs:
       array_dict:
         id: [1]
-        pixsize: [0.01]
+        pixsize: [0.01] # 10 microns / pix
         angle: [0.]
         gain: [1.2]
         x_cen: [0]
         y_cen: [0]
-        x_size: [2.56]
-        y_size: [5.12]
+        x_size: [40.96]
+        y_size: [81.92]
       x_cen_unit: mm
       y_cen_unit: mm
       x_size_unit: mm
@@ -37,33 +36,19 @@ effects:
       pixsize_unit: mm
       angle_unit: deg
       gain_unit: electron/adu
-
- # - name: uvex_fits_keywords
-#    description: UVEX-specific FITS header keywords
-#    class: ExtraFitsKeywords
-#    include: True
-#    kwargs:
-#      filename: FITS_extra_keywords.yaml
-  
-#  - name: uvex_lss_fits_keywords
-#    description: UVEX LSS-specific FITS header keywords
-#    class: ExtraFitsKeywords
-#    include: True
-#    kwargs:
-#      filename: FITS_LSS_keywords.yaml
       
-#  - name: qe_curve
-#    description: Quantum efficiency curve
-#    class: QuantumEfficiencyCurve
-#    kwargs:
-#      filename: tbd.dat
+  - name: qe_curve
+    description: Quantum efficiency curve
+    class: QuantumEfficiencyCurve
+    kwargs:
+      filename: UVEX_CMOS_QE.dat
 
-#  - name: dark_current
-#    description: CMOS detector dark current
-#    class: DarkCurrent
-#    # [e-/s] level of dark current for each detector
-#    kwargs:
-#      value: 0.003
+  - name: dark_current
+    description: CMOS detector dark current
+    class: DarkCurrent
+    # [e-/s] level of dark current for each detector
+    kwargs:
+      value: 0.001
 
 #  - name: detector_linearity
 #    description: Linearity characteristics of H4RG chips
@@ -75,8 +60,8 @@ effects:
 #    description: apply poisson shot noise to images
 #    class: ShotNoise
 
-#  - name: readout_noise
-#    description: Readout noise frames
-#    class: BasicReadoutNoise
-#    kwargs:
-#      noise_std: 3
+  - name: readout_noise
+    description: Readout noise frames
+    class: BasicReadoutNoise
+    kwargs:
+      noise_std: 2.0 # e-

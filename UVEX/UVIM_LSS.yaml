@@ -6,7 +6,7 @@ description: base configuration for UVIM LSS
 properties:
   pixel_scale: 0.80  # arcsec / pixel
   plate_scale: 80   # arcsec / mm
-  decouple_detector_from_sky_headers: False # unsure if this is needed
+  decouple_detector_from_sky_headers: True  # needed for slit spectroscopy
 
 effects:
   - name: grating_efficiency 
@@ -39,6 +39,7 @@ effects:
     class: SpectralTraceList
     kwargs:
       filename: "UVIM_LSS_spectral_trace.fits"
+      dispersion_file: "code/inputs/UVEXS_Spectral_Resolution_R2000.txt"
 
 # LSS-specific simulation parameters
 ---
@@ -50,8 +51,8 @@ description: simulation parameters for UVEX LSS spectroscopy run
 properties:
   spectral:
     spectral_bin_width: 8.2e-5  # microns, estimate from ETC
-    spectral_resolution: 3000  # estimate, actually varies with wavelength
-    wave_min: 1150   
-    wave_mid: 2350 
-    wave_max: 3550
-    wave_unit: angstrom
+    spectral_resolution: 5000
+    wave_min: 0.1150   
+    wave_mid: 0.2350 
+    wave_max: 0.3550
+    wave_unit: um
