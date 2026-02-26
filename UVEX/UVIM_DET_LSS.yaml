@@ -10,12 +10,6 @@ properties:
   ndit: "!OBS.ndit"
 
 effects:
-  - name: relay_optics
-    description: list of extra mirrors needed for the spectroscopy mode
-    class: SurfaceList
-    kwargs:
-      filename: LIST_mirrors_relay.tbl
-
   - name: LSS_Detector
     class: DetectorList
     include: True
@@ -36,12 +30,6 @@ effects:
       pixsize_unit: mm
       angle_unit: deg
       gain_unit: electron/adu
-      
-  - name: qe_curve
-    description: Quantum efficiency curve
-    class: QuantumEfficiencyCurve
-    kwargs:
-      filename: UVEX_CMOS_QE.dat
 
   - name: dark_current
     description: CMOS detector dark current

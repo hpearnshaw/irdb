@@ -9,6 +9,12 @@ properties:
   decouple_detector_from_sky_headers: True  # needed for slit spectroscopy
 
 effects:
+  - name: relay_optics
+    description: list of extra mirrors needed for the spectroscopy mode
+    class: SurfaceList
+    kwargs:
+      filename: LIST_mirrors_relay.tbl
+
   - name: grating_efficiency 
     description: grating efficiency
     class: SpectralEfficiency
@@ -39,7 +45,7 @@ effects:
     class: SpectralTraceList
     kwargs:
       filename: "UVIM_LSS_spectral_trace.fits"
-      dispersion_file: "code/inputs/UVEXS_Spectral_Resolution_R2000.txt"
+      dispersion_file: "UVIM_LSS_dispersion.dat"
 
 # LSS-specific simulation parameters
 ---
