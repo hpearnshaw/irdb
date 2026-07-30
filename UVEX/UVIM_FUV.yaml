@@ -15,17 +15,17 @@ properties:
   plate_scale: 103   # arcsec / mm
 
 effects:
-  - name: fuv_surfaces
-    description: surfaces list for FUV imaging, including the filter and dichroic transmission
-    class: SurfaceList
-    kwargs:
-      filename: LIST_surfaces_FUV.tbl
-
   - name: psf
     class: SeeingPSF
     kwargs:
       fwhm: 2
       fwhm_unit: arcsec
+
+  - name: fuv_surfaces
+    description: surfaces list for FUV imaging, including the filter and dichroic transmission
+    class: SurfaceList
+    kwargs:
+      filename: LIST_surfaces_FUV.tbl
 
 # No QE curve required as the filter is directly on the detector and thus incorporates QE
 
